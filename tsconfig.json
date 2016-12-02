@@ -1,0 +1,31 @@
+{
+  "files": [
+    "src/**/*.ts",
+    "node_modules/typescript/lib/lib.es6.d.ts",
+    "node_modules/typescript/lib/lib.es2016.d.ts"
+  ],
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "pretty": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noFallthroughCasesInSwitch": true,
+    "types": [
+      "node", "jasmine"
+    ],
+    "typeroots": [
+      "node_modules/@types"
+    ]
+  },
+  "compileOnSave": false
+}
