@@ -26,22 +26,9 @@ gulp.task('buildTests', function () {
         .pipe(gulp.dest('./tests'));
 });
 
-//Copy package.json to the deploy folder
-gulp.task('copyPackageJson', function () {
-    return gulp.src(['./package.json'])
+gulp.task('copyJsonFiles', function () {
+    return gulp.src(['./src/**/*.json'])
         .pipe(gulp.dest(dirs.dest));
-});
-
-//Copy node_modules to the deploy folder
-gulp.task('copyNodeModules', function () {
-    return gulp.src(['./node_modules/**/*'])
-        .pipe(gulp.dest(dirs.dest + '/node_modules'));
-});
-
-//Copy Bin to the deploy folder
-gulp.task('copyBin', function () {
-    return gulp.src(['./bin/nssm.exe'])
-        .pipe(gulp.dest(dirs.dest + '/bin'));
 });
 
 //Setup the config file to use the template
@@ -63,12 +50,8 @@ gulp.task('cleanAll', function () {
     ]);
 });
 
-gulp.task('buildProd', function(callback) {
-  runSequence('cleanAll', 'compileTypeScript', ['copyPackageJson', 'copyNodeModules', 'copyBin'], 'setupConfig', callback);
-});
-
 gulp.task('build', function(callback) {
-  runSequence('cleanAll', 'compileTypeScript', callback);
+  runSequence('cleanAll', 'compileTypeScript', 'copyJsonFiles', callback);
 });
 
 gulp.task('default', ['build']);

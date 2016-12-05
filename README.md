@@ -7,4 +7,6 @@ This is probably more interesting for future-me for having got the jasmine unit 
 
 `npm test` to run the tests.
 
-`npm start` to run - although this will fail because you won't have the SQL that this currently relies on.
+`npm start` to run.
+
+Scheduled queries are loaded from the `scheduledqueries.json` file.

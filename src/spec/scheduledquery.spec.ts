@@ -14,7 +14,7 @@ describe("ScheduledQuery and helper functions :", function () {
       startSecond: 0
     };
 
-    let sq = new ScheduledQuery(sqlResult);
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
 
     expect(sq.serviceName).toEqual(sqlResult.serviceName);
     expect(sq.dayOfWeek).toEqual([1, 2, 3, 4, 5]);
@@ -37,7 +37,7 @@ describe("ScheduledQuery and helper functions :", function () {
       frequency: 15
     };
 
-    let sq = new ScheduledQuery(sqlResult);
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
 
     expect(sq.serviceName).toEqual(sqlResult.serviceName);
     expect(sq.dayOfWeek).toEqual([1, 2, 3, 4, 5]);
@@ -71,14 +71,14 @@ describe("ScheduledQuery and helper functions :", function () {
 
     // This service should start at 6am, then run every 15 minutes until midnight.
 
-    let sq = new ScheduledQuery(sqlResult);
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
     let rules: RecurrenceSpec[];
     expect(() => { rules = sq.getRecurrenceRules(); }).not.toThrow();
     expect(rules).not.toBeUndefined();
     expect(rules.length).toBe(0);
   });
 
-  it("should construct recurrence rule list from REPEAT", function () {
+  it("should construct recurrence rule list from REPEAT with divisor frequency", function () {
     let sqlResult: any = {
       serviceName: "Intraday Repeating Test Service - 6.30am 7.00am, every 15 minutes.",
       scheduleType: ScheduledQuery.REPEAT,
@@ -86,14 +86,68 @@ describe("ScheduledQuery and helper functions :", function () {
       startMinute: 30,
       startSecond: 0,
       frequency: 15,
+      endHour: 8,
+      endMinute: 30,
+      endSecond: 0
+    };
+
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
+    let rules = sq.getRecurrenceRules();
+    
+    expect(rules).not.toBeUndefined();
+    expect(rules.length).toBe(3);
+    
+    expect(rules[0].hour).toEqual(6);
+    expect(rules[0].minute).toEqual(new Range(30, 59, 15));
+
+    expect(rules[2].hour).toEqual(new Range(7, 7));
+    expect(rules[2].minute).toEqual(new Range(0, 59, 15));
+
+    expect(rules[1].hour).toEqual(8);
+    expect(rules[1].minute).toEqual(new Range(0, 30, 15));
+  });
+
+
+  it("should construct recurrence rule list from REPEAT with divisor frequency and no mid-hours", function () {
+    let sqlResult: any = {
+      serviceName: "Intraday Repeating Test Service - 6.30am 7.30am, every 15 minutes.",
+      scheduleType: ScheduledQuery.REPEAT,
+      startHour: 6,
+      startMinute: 30,
+      startSecond: 0,
+      frequency: 15,
       endHour: 7,
+      endMinute: 30,
+      endSecond: 0
+    };
+
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
+    let rules = sq.getRecurrenceRules();
+    
+    expect(rules).not.toBeUndefined();
+    expect(rules.length).toBe(2);
+    
+    expect(rules[0].hour).toEqual(6);
+    expect(rules[0].minute).toEqual(new Range(30, 59, 15));
+
+    expect(rules[1].hour).toEqual(7);
+    expect(rules[1].minute).toEqual(new Range(0, 30, 15));
+  });  
+
+  it("should construct recurrence rule list from REPEAT with non-divisor frequency", function () {
+    let sqlResult: any = {
+      serviceName: "Intraday Repeating Test Service - 6.30am 7.00am, every 15 minutes.",
+      scheduleType: ScheduledQuery.REPEAT,
+      startHour: 6,
+      startMinute: 30,
+      startSecond: 0,
+      frequency: 37,
+      endHour: 8,
       endMinute: 0,
       endSecond: 0
     };
 
-    // This service should start at 6am, then run every 15 minutes until midnight.
-
-    let sq = new ScheduledQuery(sqlResult);
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
     let rules = sq.getRecurrenceRules();
     
     expect(rules).not.toBeUndefined();
@@ -101,15 +155,12 @@ describe("ScheduledQuery and helper functions :", function () {
     
     expect(rules[0].hour).toEqual(6);
     expect(rules[0].minute).toEqual(30);
-    console.log(rules[0])
 
-    expect(rules[1].hour).toEqual(6);
-    expect(rules[1].minute).toEqual(45);
-    console.log(rules[1])
+    expect(rules[1].hour).toEqual(7);
+    expect(rules[1].minute).toEqual(7);
 
     expect(rules[2].hour).toEqual(7);
-    expect(rules[2].minute).toEqual(0);
-    console.log(rules[2])
+    expect(rules[2].minute).toEqual(44);
   });
 
   it("should construct single daily recurrence spec from ONCEADAY", function () {
@@ -123,7 +174,7 @@ describe("ScheduledQuery and helper functions :", function () {
 
     // This service should start at 6am, then run every 15 minutes until midnight.
 
-    let sq = new ScheduledQuery(sqlResult);
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
     let rules = sq.getRecurrenceRules();
     
     expect(rules).not.toBeUndefined();
@@ -142,9 +193,7 @@ describe("ScheduledQuery and helper functions :", function () {
       frequency: 720,
     };
 
-    // This service should start at 6am, then run every 15 minutes until midnight.
-
-    let sq = new ScheduledQuery(sqlResult);
+    let sq = ScheduledQuery.fromSqlResult(sqlResult);
     expect(() => { let rules = sq.getRecurrenceRules(); }).not.toThrow();
   });  
 });

@@ -17,13 +17,15 @@
     "mqlight": "^2.0.2016102601",
     "msnodesqlv8": "^0.1.45",
     "node-schedule": "^1.2.0",
-    "rxjs": "5.0.0-beta.6"
+    "rxjs": "5.0.0-beta.6",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "@types/consul": "^0.23.30",
     "@types/jasmine": "^2.5.38",
     "@types/node": "0.0.0",
     "@types/node-schedule": "0.0.36",
+    "@types/uuid": "^2.0.29",
     "del": "^2.2.2",
     "gulp": "^3.9.0",
     "gulp-nodemon": "^2.0.3",

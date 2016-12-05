@@ -5,34 +5,37 @@
 
 import { Config } from './config/env.config'
 import { RecurrenceRule, RecurrenceSpec, scheduleJob, Job, Range } from 'node-schedule';
-import { SqlServerDB } from './model/sqlserverdb';
 import { ScheduledQuery } from './model/scheduledquery';
+import {
+  ScheduledQueryRepository,
+  ScheduledQueryJsonRepository
+} from './model/scheduledqueryrepository';
 import { ScheduledTime } from './model/scheduledtime';
 import { Observable } from 'rxjs/Observable';
+import { Alert } from './model/alert';
 import 'rxjs/add/operator/map';
+import * as path from 'path';
 
-let db: SqlServerDB = new SqlServerDB(Config.SqlInstance, Config.SqlDatabase);
+Config.Root = path.dirname(require.main.filename);
+
 let jobs: Job[] = [];
+let repository: ScheduledQueryRepository = new ScheduledQueryJsonRepository(Config);
+repository.getAll().subscribe((squerys: ScheduledQuery[]) => {
 
-// get the list of queries to run
-db.select(Config.ScheduledQuerySql)
-  .map(result => ScheduledQuery.fromSqlResults(result))
-  .subscribe((squerys: ScheduledQuery[]) => {
+  for (let squery of squerys) {
+    let rules = squery.getRecurrenceRules();
 
-    for (let squery of squerys) {
-      let rules = squery.getRecurrenceRules();
-
-      for (let i = 0; i < rules.length; i++) {
-        let jobName = `${squery.processName} - [${i}]`;
-        let job = scheduleJob(jobName, rules[i], () => {
-          console.log(`${new Date()} : Running ${jobName} - ${squery.query}`);
-        });
-
-        jobs.push(job);
-      }
+    for (let i = 0; i < rules.length; i++) {
+      let jobName = `${squery.serviceName} - [${i}]`;
+      let job = scheduleJob(jobName, rules[i], () => {
+        console.log(`${new Date()} : Running ${jobName} - ${this.query}`);
+      });
+      jobs.push(job);
     }
+  }
 
-    console.log(JSON.stringify(jobs));
-  },
-  (err: any) => console.error(err),
-  () => { });
+  console.log(`${new Date()} : ${jobs.length} jobs created from ${squerys.length} scheduled queries.`);
+  console.log(`${new Date()} : Query scheduler started.`);  
+},
+(err: any) => console.error(`${Date.now()} : Error loading scheduled queries - ${err}.`),
+() => {});
