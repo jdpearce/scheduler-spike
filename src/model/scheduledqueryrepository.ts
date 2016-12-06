@@ -3,6 +3,8 @@ import { IConfig } from '../config/iconfig';
 import * as rx from 'rxjs';
 import * as fs from 'fs';
 
+let sql = require('msnodesqlv8');
+
 export abstract class ScheduledQueryRepository {
 
   abstract getAll(): rx.Observable<ScheduledQuery[]>;

@@ -3,7 +3,7 @@ import { RecurrenceRule, RecurrenceSpec, Range } from 'node-schedule';
 import { Alert } from './alert';
 
 export class ScheduledQuery {
-  public static ONCEADAY: string = 'ONCEADAY';
+  public static ONCE: string = 'ONCE';
   public static REPEAT: string = 'REPEAT';
 
   id: string;
@@ -19,6 +19,10 @@ export class ScheduledQuery {
   end: ScheduledTime;
   dayOfWeek: number[];
   scheduleType: string;
+  businessImpact: string;
+  technicalImpact: string;
+  severity: string;
+  maxAdditionalInformation: number;
 
   constructor() { }
 
@@ -61,7 +65,7 @@ export class ScheduledQuery {
   }
 
   getRecurrenceRules(): RecurrenceSpec[] {
-    if (this.scheduleType === ScheduledQuery.ONCEADAY) {
+    if (this.scheduleType === ScheduledQuery.ONCE) {
       return [{
         dayOfWeek: this.dayOfWeek,
         hour: this.start.hour,

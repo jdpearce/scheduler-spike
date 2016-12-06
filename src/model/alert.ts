@@ -1,6 +1,11 @@
 import * as uuid from 'uuid';
 
 export class Alert {
+  static readonly CRITICAL:string = "CRITICAL";
+  static readonly WARNING: string = "WARNING";
+  static readonly ERROR: string = "ERROR";
+  static readonly OK: string = "OK";
+
   public title: string;
   public service: string = "";
   public serviceInError: string = "";
@@ -16,11 +21,13 @@ export class Alert {
   public status: string = "";
   public modifiedUTC: Date;
 
-  constructor(title: string, correlationId: string = null) {
-    this.title = title;
+  constructor(params: any) {
     this.timeStampUTC = new Date();
     this.modifiedUTC = new Date();
     this.timeUID = uuid.v1();
-    this.correlationId = correlationId || this.timeUID;
+    this.correlationId = this.correlationId || this.timeUID;
+
+    // params can override the values above
+    Object.assign(this, params);
   }
 }

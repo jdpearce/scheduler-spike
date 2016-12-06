@@ -3,7 +3,7 @@
 
 "use strict";
 
-import { Config } from './config/env.config'
+import { IConfig } from './config/iconfig'
 import { RecurrenceRule, RecurrenceSpec, scheduleJob, Job, Range } from 'node-schedule';
 import { ScheduledQuery } from './model/scheduledquery';
 import {
@@ -16,7 +16,11 @@ import { Alert } from './model/alert';
 import 'rxjs/add/operator/map';
 import * as path from 'path';
 
-Config.Root = path.dirname(require.main.filename);
+let Config: IConfig = {
+  SqlInstance: '<instance name>',
+  SqlDatabase: '<database name>',
+  Root: path.dirname(require.main.filename)
+};
 
 let jobs: Job[] = [];
 let repository: ScheduledQueryRepository = new ScheduledQueryJsonRepository(Config);

@@ -8,7 +8,7 @@ describe("ScheduledQuery and helper functions :", function () {
   it("should construct once a day scheduled query from sql result object", function () {
     let sqlResult: any = {
       serviceName: "Daily Test Service",
-      scheduleType: ScheduledQuery.ONCEADAY,
+      scheduleType: ScheduledQuery.ONCE,
       startHour: 6,
       startMinute: 0,
       startSecond: 0
@@ -18,7 +18,7 @@ describe("ScheduledQuery and helper functions :", function () {
 
     expect(sq.serviceName).toEqual(sqlResult.serviceName);
     expect(sq.dayOfWeek).toEqual([1, 2, 3, 4, 5]);
-    expect(sq.scheduleType).toBe(ScheduledQuery.ONCEADAY);
+    expect(sq.scheduleType).toBe(ScheduledQuery.ONCE);
     expect(sq.end).toBeUndefined();
     expect(sq.frequency).toBeUndefined();
     expect(sq.start).not.toBeUndefined();
@@ -163,10 +163,10 @@ describe("ScheduledQuery and helper functions :", function () {
     expect(rules[2].minute).toEqual(44);
   });
 
-  it("should construct single daily recurrence spec from ONCEADAY", function () {
+  it("should construct single daily recurrence spec from ONCE", function () {
     let sqlResult: any = {
       serviceName: "Once A Day Test Service - 6.30am.",
-      scheduleType: ScheduledQuery.ONCEADAY,
+      scheduleType: ScheduledQuery.ONCE,
       startHour: 6,
       startMinute: 30,
       startSecond: 0,
